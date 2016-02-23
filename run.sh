@@ -123,7 +123,7 @@ gzcat $TFBS \
 gzcat $GENES \
     | awk '$1 == "chr22"' \
     | bedtools sort -i - \
-    | bedtools reldist -a - -b $TFBS \
+    | bedtools reldist -a $TFBS -b - \
     > GENES_TFBS_reldist.tsv
 
 
