@@ -108,3 +108,23 @@ echo "answer-5: $answer5"
 
 ## Question 6 (extra credit)
 #Use one or more BEDtools that we haven't covered in class. Be creative.
+
+#This uses bedtools reldist to find the relative distance between
+#transcription factor binding sites and transcription start sites or genes
+
+#I will make a plot of the information. 
+
+gzcat $TSS > TSS.bed
+
+gzcat $TFBS \
+    | bedtools reldist -a - -b $TSS \
+    > TSS_TFBS_reldist.tsv
+
+gzcat $GENES \
+    | awk '$1 == "chr22"' \
+    | bedtools sort -i - \
+    | bedtools reldist -a - -b $TFBS \
+    > GENES_TFBS_reldist.tsv
+
+
+
