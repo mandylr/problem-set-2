@@ -10,11 +10,11 @@ H3K4="$datasets/bed/encode.h3k4me3.hela.chr22.bed.gz"
 TFBS="$datasets/bed/encode.tfbs.chr22.bed.gz"
 
 gzcat $TFBS | awk '$4 == "CTCF"' \
-    | bedtools sort -i - > CTCF.bed
+    | bedtools sort -i - > data/CTCF.bed
 
 answer1=$(gzcat $H3K4 \
    | bedtools sort -i - \
-   | bedtools intersect -a CTCF.bed -b - -wo \
+   | bedtools intersect -a data/CTCF.bed -b - -wo \
    | awk '{print $NF}' \
    | sort -nr \
    | head -n1)
@@ -31,7 +31,7 @@ echo  "answer-1: $answer1"
 #You want column 2 - %GC content, but may need to change it to a fraction
 
 HG19="$datasets/fasta/hg19.chr22.fa"
-GC="/Users/mandyricher/Desktop/Classes/GenomicsWorkshop/problem-set-2/GC.bed"
+GC="/Users/mandyricher/Desktop/Classes/GenomicsWorkshop/problem-set-2/data/GC.bed"
 
 echo -e "chr22\t19000000\t19000500" > $GC
 
@@ -51,7 +51,7 @@ echo "answer-2: $answer2"
 
 CTCF="$datasets/bedtools/ctcf.hela.chr22.bg"
 
-answer3=$(bedtools map -a CTCF.bed -b $CTCF -c 4 -o mean \
+answer3=$(bedtools map -a data/CTCF.bed -b $CTCF -c 4 -o mean \
     | sort -k5n \
     | tail -n1 \
     | awk '{print $3 - $2}')
@@ -92,13 +92,13 @@ echo "answer-4: $answer4"
 
 GENES="$datasets/bed/genes.hg19.bed.gz"
 
-awk '$1 == "chr22"' $GENOME > chr22.genome
+awk '$1 == "chr22"' $GENOME > data/chr22.genome
 
 
 answer5=$(gzcat $GENES \
     | awk '$1 == "chr22"' \
     | bedtools sort -i - \
-    | bedtools complement -i - -g chr22.genome \
+    | bedtools complement -i - -g data/chr22.genome \
     | awk '{print $1, $2, $3, $3 - $2}'\
     | sort -k4n \
     | tail -n1 \
@@ -114,7 +114,7 @@ echo "answer-5: $answer5"
 
 #I will make a plot of the information. 
 
-gzcat $TSS > TSS.bed
+gzcat $TSS > data/TSS.bed
 
 gzcat $TFBS \
     | bedtools reldist -a - -b $TSS \
@@ -126,5 +126,5 @@ gzcat $GENES \
     | bedtools reldist -a $TFBS -b - \
     > GENES_TFBS_reldist.tsv
 
-
+echo "answer-6: see R plot"
 
